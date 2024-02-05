@@ -5,6 +5,9 @@ import urllib.error
 from urllib.request import Request, urlopen
 import urllib.request
 
+import requests
+from os.path  import basename
+
 
 # pip install beautifulsoup4
 from bs4 import BeautifulSoup, SoupStrainer
@@ -40,15 +43,12 @@ def scrapeCity(cityNames, cityLinks):
                 
         # In a production env this will be modularized, and its output routed to a file store where the main program will call on instead of having to rescrape every second
 
-def scrapeWeather(links):
+def scrapeWeather(links, mainForecast, futureForecast, forecastGifs):
 
      # sends a request to the website then returns the HTML infor to be sorted for usable info
     weatherReq = Request(links, headers={'User-Agent': 'Mozilla/5.0'})
     weatherDoc = urlopen(weatherReq).read()
 
-    mainForecast = []
-
-    
 
     soup = BeautifulSoup(weatherDoc, 'html.parser')
         # by giving it a class to look for you can get the specific information you need much easier
@@ -74,7 +74,11 @@ def scrapeWeather(links):
 
     loop = 0
 
-    futureForecast = [[],[],[],[],[],[],[]]
+    images = soup.findAll('img')
+    for image in images:
+        # Print image source
+        if re.search(r"\.gif$", image['src']):
+            forecastGifs.append("https://weather.gc.ca/" + image['src'])
 
     for i in range(7):
         elements = soup.find_all(class_="div-column")[i]
@@ -84,10 +88,16 @@ def scrapeWeather(links):
                 loop += 1
                 if re.match("^", string): 
                     futureForecast[i].append(string)
+        
+         # write the gifs to a file and store in in temp
+        with open("temp/"+ str(i) + "_" + basename(forecastGifs[i]), "wb") as f:
+            f.write(requests.get(forecastGifs[i]).content)
 
-    print(futureForecast[1])
     #['Sat', '3', 'Feb', '1', '°', 'C', 'Mainly sunny', 'Night', '-13', '°', 'C', 'A few clouds']  
 
     #okay now i just want to steal their cute emojis
 
+    print(mainForecast)
+    print(futureForecast)
     
+   
