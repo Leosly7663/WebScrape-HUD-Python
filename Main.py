@@ -21,14 +21,16 @@ Heres a raw data sample
 """
 
 
-observedAt = "Saint-Anicet 11:00 PM EST"
-condition = "Not Observed"
-pressure = "101.7 kPa"
-tendency = "Falling"
-temperature = "-7°C"
-dewPoint = "-7.5°C"
-humdity = "96%"
-wind = "calm" 
+observedAt = "Saint-Anicet 11:00 PM EST" # [1]+[2]+[3]
+condition = "Not Observed" #[5]
+pressure = "101.7 kPa" # [7] + [8]
+tendency = "Falling" # [10]
+temperature = "-7°C" # [12] + [13]
+dewPoint = "-7.5°C" # [15] + [16]
+humdity = "96%" # [18]
+wind = "calm" # [20]
+
+
 
 # Create main window
 window = tk.Tk()
@@ -90,12 +92,27 @@ def makeImage(image,x,y):
     test = ImageTk.PhotoImage(image1.resize((x, y)))
     return test
 
-def option_selected(name):
-    mainForecast = []
+mainForecast = []
+futureForecast = [[],[],[],[],[],[],[]]
+
+def option_selected(name, mainForecast, futureForecast):
     forecastGifs = []
-    futureForecast = [[],[],[],[],[],[],[]]
     link = links[names.index(name)]
     scrapeWeather(link, mainForecast, futureForecast, forecastGifs)
+    
+option_selected("Barrie", mainForecast, futureForecast) # default city for startup is my home town Barrie ON <3
+
+# this should work but we need to rescrape and repack every 3 mins TODO
+observedAt = mainForecast[1]+mainForecast[2]+mainForecast[3]
+condition = mainForecast[5]
+pressure = mainForecast[7] + mainForecast[8]
+tendency = mainForecast[10]
+temperature = mainForecast[12] + mainForecast[13]
+dewPoint = mainForecast[15] + mainForecast[16]
+humdity = mainForecast[18]
+wind = mainForecast[20]
+
+
 
 
 # Define dropdown menu
