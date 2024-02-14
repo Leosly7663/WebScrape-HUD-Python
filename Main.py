@@ -51,6 +51,36 @@ topFrame = Frame(window, bg="lightgray")
 leftFrame = Frame(window, bg="lightgray")
 rightFrame = Frame(window, bg="white")
 
+names = []
+links = []
+scrapeCity(names, links) 
+
+# turns image names and size coordinates into usable photoimages
+def makeImage(image,x,y):
+    image1 = Image.open(image+".png")
+    test = ImageTk.PhotoImage(image1.resize((x, y)))
+    return test
+
+mainForecast = []
+futureForecast = [[],[],[],[],[],[],[]]
+
+def option_selected(name, mainForecast, futureForecast):
+    forecastGifs = []
+    link = links[names.index(name)]
+    scrapeWeather(link, mainForecast, futureForecast, forecastGifs)
+    
+option_selected("Barrie", mainForecast, futureForecast) # default city for startup is my home town Barrie ON <3
+
+# this should work but we need to rescrape and repack every 3 mins TODO
+observedAt = mainForecast[1]+" "+mainForecast[2]+" "+mainForecast[3]
+condition = mainForecast[5]
+pressure = mainForecast[7] + mainForecast[8]
+tendency = mainForecast[10]
+temperature = mainForecast[12] + mainForecast[13]
+dewPoint = mainForecast[15] + mainForecast[16]
+humdity = mainForecast[18]
+wind = mainForecast[20]
+
 
 # Define labels
 leftLabel = Label           (leftFrame, text="Current Conditions:", font=fontStyle, bg="lightgray").grid        (row=0, sticky=W, pady=10)
@@ -85,41 +115,14 @@ rightFrame.pack(side=RIGHT,  pady=20)
 menu_bar = Menu(topFrame)
 settings_menu = Menu(menu_bar, tearoff=0)
 
-
-# turns image names and size coordinates into usable photoimages
-def makeImage(image,x,y):
-    image1 = Image.open(image+".png")
-    test = ImageTk.PhotoImage(image1.resize((x, y)))
-    return test
-
-mainForecast = []
-futureForecast = [[],[],[],[],[],[],[]]
-
-def option_selected(name, mainForecast, futureForecast):
-    forecastGifs = []
-    link = links[names.index(name)]
-    scrapeWeather(link, mainForecast, futureForecast, forecastGifs)
-    
-option_selected("Barrie", mainForecast, futureForecast) # default city for startup is my home town Barrie ON <3
-
-# this should work but we need to rescrape and repack every 3 mins TODO
-observedAt = mainForecast[1]+mainForecast[2]+mainForecast[3]
-condition = mainForecast[5]
-pressure = mainForecast[7] + mainForecast[8]
-tendency = mainForecast[10]
-temperature = mainForecast[12] + mainForecast[13]
-dewPoint = mainForecast[15] + mainForecast[16]
-humdity = mainForecast[18]
-wind = mainForecast[20]
-
-
-
-
 # Define dropdown menu
 dropdown_menu = Menu(settings_menu, tearoff=0)
-names = []
-links = []
-scrapeCity(names, links) 
+
+
+
+
+
+
 
 
 for index, option in enumerate(names, start=1):
