@@ -74,6 +74,8 @@ def scrapeWeather(links, mainForecast, futureForecast, forecastGifs):
 
     loop = 0
 
+    
+    #okay now i just want to steal their cute emojis
     images = soup.findAll('img')
     for image in images:
         # Print image source
@@ -95,7 +97,6 @@ def scrapeWeather(links, mainForecast, futureForecast, forecastGifs):
 
     #['Sat', '3', 'Feb', '1', '°', 'C', 'Mainly sunny', 'Night', '-13', '°', 'C', 'A few clouds']  
 
-    #okay now i just want to steal their cute emojis
 
     print(mainForecast)
     print(futureForecast)

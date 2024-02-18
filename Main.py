@@ -63,15 +63,26 @@ observedAtCurrent = Label   (leftFrame, text="Observed at: "+observedAt, font=fo
 
 
 # [['Tonight', '-14', '°', 'C', 'Partly cloudy'], 
-def forecastLabel():
+def tonightLabel():
         
-        day = Label  (rightFrame, text=temperature, font=fontStyle, bg="lightgray").grid      (row=1, sticky=W, pady=10)
-        blank = Label  (rightFrame, bg="white").grid      (row=2, sticky=W, pady=5, columnspan="2")
-        gif = Label  (rightFrame, text=temperature, font=fontStyle, bg="lightgray").grid      (row=3, sticky=W)
-        temp = Label  (rightFrame, text=temperature, font=fontStyle, bg="lightgray").grid      (row=4, sticky=W)
-        conditions = Label  (rightFrame, text=temperature, font=fontStyle, bg="lightgray").grid      (row=5, sticky=W)
+        day = Label  (rightFrame, text="Tonight", font=fontStyle, bg="lightgray").grid      (row=1, sticky=W, pady=10)
+        blank = Label  (rightFrame, bg="white").grid                                            (row=2, sticky=W, pady=5, )
+        conditions = Label  (rightFrame, text="Partly cloudy", font=fontStyle, bg="lightgray").grid      (row=3, sticky=W)
+        gif = Label  (rightFrame, text="-14°C", font=fontStyle, bg="lightgray").grid      (row=4,column=1, sticky=W)
+        temp = Label  (rightFrame, text="-14°C", font=fontStyle, bg="lightgray").grid      (row=4, column=2, sticky=W)
 
-forecastLabel()
+tonightLabel()
+
+# ['Mon', '5', 'Feb', '-1', '°', 'C', 'A mix of sun and cloud', 'Night', '-16', '°', 'C', 'A few clouds'], 
+def tonightLabel():
+        
+        day = Label  (rightFrame, text="Mon 5 Feb", font=fontStyle, bg="lightgray").grid      (row=1, sticky=W, pady=10)
+        blank = Label  (rightFrame, bg="white").grid                                            (row=2, sticky=W, pady=5, )
+        conditions = Label  (rightFrame, text="'A mix of sun and cloud", font=fontStyle, bg="lightgray").grid      (row=3, sticky=W)
+        gif = Label  (rightFrame, text="-14°C", font=fontStyle, bg="lightgray").grid      (row=4,column=1, sticky=W)
+        temp = Label  (rightFrame, text="-14°C", font=fontStyle, bg="lightgray").grid      (row=4, column=2, sticky=W)
+
+tonightLabel()
 
 
 # Place frames
