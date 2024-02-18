@@ -92,7 +92,7 @@ def scrapeWeather(links, mainForecast, futureForecast, forecastGifs):
                     futureForecast[i].append(string)
         
          # write the gifs to a file and store in in temp
-        with open("temp/"+ str(i) + "_" + basename(forecastGifs[i]), "wb") as f:
+        with open("temp/" + str(i) + ".gif", "wb") as f:
             f.write(requests.get(forecastGifs[i]).content)
 
     #['Sat', '3', 'Feb', '1', '°', 'C', 'Mainly sunny', 'Night', '-13', '°', 'C', 'A few clouds']  

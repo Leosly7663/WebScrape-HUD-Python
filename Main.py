@@ -57,7 +57,7 @@ scrapeCity(names, links)
 
 # turns image names and size coordinates into usable photoimages
 def makeImage(image,x,y):
-    image1 = Image.open(image+".png")
+    image1 = Image.open("temp/"+image+".gif")
     test = ImageTk.PhotoImage(image1.resize((x, y)))
     return test
 
@@ -96,25 +96,37 @@ observedAtCurrent = Label   (leftFrame, text="Observed at: "+observedAt, font=fo
 
 # [['Tonight', '-14', '°', 'C', 'Partly cloudy'], 
 def tonightLabel():
+        test = makeImage("0",32,32)
+        
         
         day = Label  (rightFrame, text="Tonight", font=fontStyle, bg="lightgray").grid      (row=1, sticky=W, pady=10)
         blank = Label  (rightFrame, bg="white").grid                                            (row=2, sticky=W, pady=5, )
         conditions = Label  (rightFrame, text="Partly cloudy", font=fontStyle, bg="lightgray").grid      (row=3, sticky=W)
-        gif = Label  (rightFrame, text="-14°C", font=fontStyle, bg="lightgray").grid      (row=4,column=1, sticky=W)
+        labelImage = Label  (rightFrame, image=test )
+        labelImage.image = test
+        labelImage.grid      (row=5,column=1, sticky=W)
         temp = Label  (rightFrame, text="-14°C", font=fontStyle, bg="lightgray").grid      (row=4, column=2, sticky=W)
 
 tonightLabel()
 
 # ['Mon', '5', 'Feb', '-1', '°', 'C', 'A mix of sun and cloud', 'Night', '-16', '°', 'C', 'A few clouds'], 
-def tonightLabel():
+def NextLabel():
         
         day = Label  (rightFrame, text="Mon 5 Feb", font=fontStyle, bg="lightgray").grid      (row=1, sticky=W, pady=10)
+
         blank = Label  (rightFrame, bg="white").grid                                            (row=2, sticky=W, pady=5, )
+
         conditions = Label  (rightFrame, text="'A mix of sun and cloud", font=fontStyle, bg="lightgray").grid      (row=3, sticky=W)
-        gif = Label  (rightFrame, text="-14°C", font=fontStyle, bg="lightgray").grid      (row=4,column=1, sticky=W)
+        gif = Label  (rightFrame, text="-1°C", font=fontStyle, bg="lightgray").grid      (row=4,column=1, sticky=W)
         temp = Label  (rightFrame, text="-14°C", font=fontStyle, bg="lightgray").grid      (row=4, column=2, sticky=W)
 
-tonightLabel()
+        blank = Label  (rightFrame, bg="white").grid                                            (row=2, sticky=W, pady=5, )
+        
+        conditions = Label  (rightFrame, text="'A mix of sun and cloud", font=fontStyle, bg="lightgray").grid      (row=3, sticky=W)
+        gif = Label  (rightFrame, text="-1°C", font=fontStyle, bg="lightgray").grid      (row=4,column=1, sticky=W)
+        temp = Label  (rightFrame, text="-14°C", font=fontStyle, bg="lightgray").grid      (row=4, column=2, sticky=W)
+
+NextLabel()
 
 
 # Place frames
