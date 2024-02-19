@@ -99,8 +99,4 @@ def scrapeWeather(links, mainForecast, futureForecast, forecastGifs):
 
     #['Sat', '3', 'Feb', '1', '°', 'C', 'Mainly sunny', 'Night', '-13', '°', 'C', 'A few clouds']  
 
-
-    print(mainForecast)
-    print(futureForecast)
-    
    

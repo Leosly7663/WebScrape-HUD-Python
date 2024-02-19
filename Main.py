@@ -7,7 +7,7 @@ import datetime
 from WebScrape import scrapeCity, scrapeWeather
 
 # Initialize default values
-color = "white"
+color = "Gray"
 bgColor = "lightgray"
 """
 Heres a raw data sample 
@@ -20,16 +20,6 @@ Heres a raw data sample
 ['Fri', '9', 'Feb', '5', '°', 'C', 'Cloudy', 'Night', '3', '°', 'C', '60%', 'Chance of showers'],
 ['Sat', '10', 'Feb', '6', '°', 'C', '60%', 'Chance of showers']]
 """
-
-
-observedAt = "Saint-Anicet 11:00 PM EST" # [1]+[2]+[3]
-condition = "Not Observed" #[5]
-pressure = "101.7 kPa" # [7] + [8]
-tendency = "Falling" # [10]
-temperature = "-7°C" # [12] + [13]
-dewPoint = "-7.5°C" # [15] + [16]
-humdity = "96%" # [18]
-wind = "calm" # [20]
 
 
 
@@ -68,75 +58,82 @@ def makeImage(image,x,y):
 mainForecast = []
 futureForecast = [[],[],[],[],[],[],[]]
 
+
+
+# this should work but we need to rescrape and repack every 3 mins TODO
+
+def build():
+    observedAt = mainForecast[1]+" "+mainForecast[2]+" "+mainForecast[3]
+    condition = mainForecast[5]
+    pressure = mainForecast[7] + mainForecast[8]
+    tendency = mainForecast[10]
+    temperature = mainForecast[12] + mainForecast[13]
+    dewPoint = mainForecast[15] + mainForecast[16]
+    humdity = mainForecast[18]
+    wind = mainForecast[20]
+
+
+    # Define labels
+    leftLabel = Label           (leftFrame, text="Current Conditions:", font=fontStyle, bg="lightgray",fg=color).grid        (row=0, sticky=E, pady=10)
+    temperatureCurrent = Label  (leftFrame, text=temperature, font=fontStyleBig, bg="lightgray",fg=color).grid               (row=1, sticky=E, pady=10)
+    conditionCurrent = Label    (leftFrame, text=condition, font=fontStyleBig, bg="lightgray",fg=color).grid                 (row=2, sticky=E, pady=10)
+    tendencyCurrent = Label     (leftFrame, text="Tendency: "+tendency, font=fontStyle, bg="lightgray",fg=color).grid        (row=3, sticky=E, pady=10)
+    humidityCurrent = Label     (leftFrame, text="Humidity: "+humdity, font=fontStyle, bg="lightgray",fg=color).grid         (row=4, sticky=E, pady=10)
+    windSpeedCurrent = Label    (leftFrame, text="Wind: "+wind, font=fontStyle, bg="lightgray",fg=color).grid                (row=5, sticky=E, pady=10)
+    dewpointCurrent = Label     (leftFrame, text="Dewpoint: "+dewPoint, font=fontStyle, bg="lightgray",fg=color).grid        (row=6, sticky=E, pady=10)
+    pressureCurrent = Label     (leftFrame, text="Pressure: "+pressure, font=fontStyle, bg="lightgray",fg=color).grid        (row=7, sticky=E, pady=10)
+    observedAtCurrent = Label   (leftFrame, text="Observed at: "+observedAt, font=fontStyle, bg="lightgray",fg=color).grid   (row=8, sticky=E, pady=10)
+
+    def dayLabel(i, temp, condition, night):
+            offset = 0
+            if night: offset = 1
+            test = makeImage(str(i),32,32)
+            conditions = Label  (rightFrame, text=condition, font=fontStyle, bg="lightgray",fg=color).grid      (row=2*i+offset,column=3, sticky=W)
+            labelImage = Label  (rightFrame, image=test )
+            labelImage.image = test
+            labelImage.grid      (row=i+(6*offset),column=1, sticky=W)
+            temp = Label  (rightFrame, text=temp, font=fontStyle, bg="lightgray",fg=color).grid      (row=2*i+offset,column=2, sticky=E)
+
+
+    # [['Tonight', '-14', '°', 'C', 'Partly cloudy'], 
+
+    # have to secure my job security so comments? no <3
+    tonightText = futureForecast[0][0]
+    if tonightText == "Tonight":
+        day = Label  (rightFrame, text=tonightText, font=fontStyle, bg="lightgray",fg=color).grid      (row=1, sticky=W, )
+        dayLabel(0, futureForecast[0][1] + futureForecast[0][2]+ futureForecast[0][3], futureForecast[0][4])
+    else:
+        for i in range(0,6):
+            j =0
+            tonightText = futureForecast[i][0] + futureForecast[i][1] + futureForecast[i][2]
+            day = Label  (rightFrame, text=tonightText, font=fontStyle, bg="lightgray",fg=color).grid      (row=2*i,column=0, sticky=W, )
+
+            if re.search(r"%$",futureForecast[i][6]):
+                j = 1
+                conditionsPassed = futureForecast[i][6] + futureForecast[i][7]
+                tempPassedNext = futureForecast[i][9] + futureForecast[i][10]+ futureForecast[i][11]
+            else:
+                conditionsPassed = futureForecast[i][6]
+                tempPassedNext = futureForecast[i][8] + futureForecast[i][9]+ futureForecast[i][10]
+
+            dayLabel(i, futureForecast[i][3] + futureForecast[i][4] + futureForecast[i][5], conditionsPassed, False)
+            night = Label  (rightFrame, text="Night", font=fontStyle, bg="lightgray",fg=color).grid      (row=2*i+1,column=0, sticky=W, )
+
+            if re.search(r"%$",futureForecast[i][11+j]):
+                conditionsPassed = futureForecast[i][11+j] + futureForecast[i][12+j]
+            else:
+                conditionsPassed = futureForecast[i][11+j]
+            dayLabel(i, tempPassedNext, conditionsPassed, True)
+
 def option_selected(name, mainForecast, futureForecast):
     forecastGifs = []
     link = links[names.index(name)]
     scrapeWeather(link, mainForecast, futureForecast, forecastGifs)
+    rightFrame.forget()
+    build()
+    rightFrame.pack(side=LEFT,  pady=20, fill=Y)
     
 option_selected("Barrie", mainForecast, futureForecast) # default city for startup is my home town Barrie ON <3
-
-# this should work but we need to rescrape and repack every 3 mins TODO
-observedAt = mainForecast[1]+" "+mainForecast[2]+" "+mainForecast[3]
-condition = mainForecast[5]
-pressure = mainForecast[7] + mainForecast[8]
-tendency = mainForecast[10]
-temperature = mainForecast[12] + mainForecast[13]
-dewPoint = mainForecast[15] + mainForecast[16]
-humdity = mainForecast[18]
-wind = mainForecast[20]
-
-
-# Define labels
-leftLabel = Label           (leftFrame, text="Current Conditions:", font=fontStyle, bg="lightgray",fg=color).grid        (row=0, sticky=E, pady=10)
-temperatureCurrent = Label  (leftFrame, text=temperature, font=fontStyleBig, bg="lightgray",fg=color).grid               (row=1, sticky=E, pady=10)
-conditionCurrent = Label    (leftFrame, text=condition, font=fontStyleBig, bg="lightgray",fg=color).grid                 (row=2, sticky=E, pady=10)
-tendencyCurrent = Label     (leftFrame, text="Tendency: "+tendency, font=fontStyle, bg="lightgray",fg=color).grid        (row=3, sticky=E, pady=10)
-humidityCurrent = Label     (leftFrame, text="Humidity: "+humdity, font=fontStyle, bg="lightgray",fg=color).grid         (row=4, sticky=E, pady=10)
-windSpeedCurrent = Label    (leftFrame, text="Wind: "+wind, font=fontStyle, bg="lightgray",fg=color).grid                (row=5, sticky=E, pady=10)
-dewpointCurrent = Label     (leftFrame, text="Dewpoint: "+dewPoint, font=fontStyle, bg="lightgray",fg=color).grid        (row=6, sticky=E, pady=10)
-pressureCurrent = Label     (leftFrame, text="Pressure: "+pressure, font=fontStyle, bg="lightgray",fg=color).grid        (row=7, sticky=E, pady=10)
-observedAtCurrent = Label   (leftFrame, text="Observed at: "+observedAt, font=fontStyle, bg="lightgray",fg=color).grid   (row=8, sticky=E, pady=10)
-
-def dayLabel(i, temp, conditions, night):
-        offset = 0
-        if night: offset = 1
-        test = makeImage(str(i),32,32)
-        conditions = Label  (rightFrame, text=conditions, font=fontStyle, bg="lightgray",fg=color).grid      (row=2*i+offset,column=3, sticky=W)
-        labelImage = Label  (rightFrame, image=test )
-        labelImage.image = test
-        labelImage.grid      (row=i+(6*offset),column=1, sticky=W)
-        temp = Label  (rightFrame, text=temp, font=fontStyle, bg="lightgray",fg=color).grid      (row=2*i+offset,column=2, sticky=E)
-
-
-# [['Tonight', '-14', '°', 'C', 'Partly cloudy'], 
-
-# have to secure my job security so comments? no <3
-tonightText = futureForecast[0][0]
-if tonightText == "Tonight":
-    day = Label  (rightFrame, text=tonightText, font=fontStyle, bg="lightgray",fg=color).grid      (row=1, sticky=W, )
-    dayLabel(0, futureForecast[0][1] + futureForecast[0][2]+ futureForecast[0][3], futureForecast[0][4])
-else:
-     for i in range(0,6):
-          j =0
-          tonightText = futureForecast[i][0] + futureForecast[i][1] + futureForecast[i][2]
-          day = Label  (rightFrame, text=tonightText, font=fontStyle, bg="lightgray",fg=color).grid      (row=2*i,column=0, sticky=W, )
-
-          if re.search(r"%$",futureForecast[i][6]):
-               j = 1
-               conditionsPassed = futureForecast[i][6] + futureForecast[i][7]
-               tempPassedNext = futureForecast[i][9] + futureForecast[i][10]+ futureForecast[i][11]
-          else:
-               conditionsPassed = futureForecast[i][6]
-               tempPassedNext = futureForecast[i][8] + futureForecast[i][9]+ futureForecast[i][10]
-
-          dayLabel(i, futureForecast[i][3] + futureForecast[i][4] + futureForecast[i][5], conditionsPassed, False)
-          night = Label  (rightFrame, text="Night", font=fontStyle, bg="lightgray",fg=color).grid      (row=2*i+1,column=0, sticky=W, )
-
-          if re.search(r"%$",futureForecast[i][10]):
-               conditionsPassed = futureForecast[i][11+j] + futureForecast[i][12+j]
-          else:
-               conditionsPassed = futureForecast[i][11+j]
-          dayLabel(i, tempPassedNext, conditionsPassed, True)
 
 """ 
 [['Mon', '19', 'Feb', '-4', '°', 'C', 'A few flurries', 'Tonight', '-15', '°', 'C', 'Mainly cloudy'], 
@@ -211,7 +208,7 @@ bgColor_menu.add_command(label="White", command=lambda opt="White": handleBgChan
 
 
 for index, option in enumerate(names, start=1):
-    dropdown_menu.add_command(label=option, command=lambda opt=option: option_selected(opt))
+    dropdown_menu.add_command(label=option, command=lambda opt=option: option_selected(opt,mainForecast ,futureForecast))
 
 fontStyle3 = tkFont.Font(family="Times New Roman", size=35)
 fontStyle4 = tkFont.Font(family="Times New Roman", size=30)
@@ -228,7 +225,7 @@ dateDisplay.grid(row=21,column=0,sticky=E)
 
 
 def play():
-    global now, timeDisplay, color
+    global now, timeDisplay, color, window
     x = datetime.datetime.now()
     now = (x.strftime("%X"))
     timeDisplay.grid_forget()
